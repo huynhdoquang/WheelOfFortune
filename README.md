@@ -14,3 +14,5 @@ I've some feature for my project as:
 -You can select stick angle (angle end of the spin wheel).
 
 -You can easily implement spin wheel on Canvas.
+
+Find Demo in here (https://huynhdoquang.itch.io/wheel-of-fortune).
