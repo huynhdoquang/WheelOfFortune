@@ -20,17 +20,18 @@ public class SpinWheel : MonoBehaviour
     /// <summary>
     /// Angle to put stick recieve reward
     /// </summary>
-    private float angleSelected;
+    [SerializeField] private float angleSelected;
 
     private bool spinning;
     private float anglePerItem;
     private int itemNumber;
 
+
     [SerializeField] private bool isClockwise;
 
     //Action
-    System.Action OnStartSpinAction;
-    System.Action<int> OnEndSpinAction;
+    public System.Action<int> OnStartSpinAction;
+    public System.Action<int> OnEndSpinAction;
 
     public void SetAngleEnd(int choice)
     {
@@ -38,6 +39,11 @@ public class SpinWheel : MonoBehaviour
         if (choice == 1) angleSelected = 270;
         if (choice == 2) angleSelected = 180;
         if (choice == 3) angleSelected = 0;
+    }
+
+    public void SetClockwise(bool isClokwise)
+    {
+        this.isClockwise = isClokwise;
     }
 
     void Start()
@@ -66,12 +72,11 @@ public class SpinWheel : MonoBehaviour
                 Spin(7);
             if (Input.GetKeyDown(KeyCode.Keypad0))
                 Spin(0);
+            if (Input.GetKeyDown(KeyCode.Keypad8))
+                Spin(8);
+            if (Input.GetKeyDown(KeyCode.Keypad9))
+                Spin(9);
 
-            //randomTime = Random.Range(1, 4);
-            //itemNumber = Random.Range(0, prize.Count);
-            //float maxAngle = 360 * randomTime + (itemNumber * anglePerItem);
-            //Debug.Log("itemNumber No. : " + itemNumber);
-            //StartCoroutine(SpinTheWheel(5 * randomTime, maxAngle));
         }
     }
 
@@ -79,21 +84,25 @@ public class SpinWheel : MonoBehaviour
     {
 
         if (OnStartSpinAction != null)
-            OnStartSpinAction.Invoke();
+            OnStartSpinAction.Invoke(order);
+
+        Debug.Log("itemNumber No. : " + itemNumber);
+
+        //float angleAdjust = anglePerItem / (float)2;
 
         if (!isClockwise)
         {
             itemNumber = order;
-            float maxAngle = 360 * randomTime + (itemNumber * anglePerItem) + angleSelected; // + angleSelected
-            Debug.Log("itemNumber No. : " + itemNumber);
+            float maxAngle = 360 * randomTime + (itemNumber * anglePerItem) + angleSelected; //  + angleAdjust
             StartCoroutine(SpinTheWheel(5 * randomTime, maxAngle));
         }
         else
         {
-            if (order == 0) itemNumber = 0;
-            else itemNumber = prize.Count - order;
-            float maxAngle = 360 * randomTime + (itemNumber * anglePerItem) - angleSelected; // - angleSelected
-            Debug.Log("itemNumber No. : " + itemNumber);
+            itemNumber = order;
+            var _itemNumber = itemNumber;
+            if (order == 0) _itemNumber = 0;
+            else _itemNumber = prize.Count - order;
+            float maxAngle = 360 * randomTime + (_itemNumber * anglePerItem) - angleSelected; // - angleAdjust
             StartCoroutine(SpinTheWheel(5 * randomTime, maxAngle));
         }
     }
